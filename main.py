@@ -1,7 +1,9 @@
+from handlers.booking_handler import BookingHandler
+
+
 def main() -> None:
-    print("Hellow World")
-    str = "Abc 8 10  ".split()
-    print(len(str))
+    handler = BookingHandler()
+    handler.start()
 
 
 if __name__ == "__main__":

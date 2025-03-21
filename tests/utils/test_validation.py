@@ -1,5 +1,6 @@
 import pytest
-from utils.validation import validate_title_rows_seats_per_row, validate_menu_selection, validate_number_of_tickets
+
+from utils.validation import validate_menu_selection, validate_number_of_tickets, validate_string_input, validate_title_rows_seats_per_row
 
 
 @pytest.mark.parametrize(
@@ -54,4 +55,19 @@ def test_validate_menu_selection(selection_str, is_valid):
 )
 def test_validate_number_of_tickets(number_of_tickets_str, is_valid):
     result = validate_number_of_tickets(number_of_tickets_str)
+    assert result == is_valid
+
+
+@pytest.mark.parametrize(
+    "input_str, is_valid",
+    [
+        (None, (False, None)),
+        ("", (False, None)),
+        ("   ", (False, None)),
+        ("B03", (True, "B03")),
+        ("GIC0004", (True, "GIC0004")),
+    ],
+)
+def test_validate_string_input(input_str, is_valid):
+    result = validate_string_input(input_str)
     assert result == is_valid

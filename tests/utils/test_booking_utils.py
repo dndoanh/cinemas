@@ -4,9 +4,9 @@ from models.seat import Seat
 from utils.booking_utils import generate_booking_id, generate_default_seats, generate_seats_by_position, get_furthest_row_idx
 
 
-@pytest.mark.parametrize("last_booking_id_index, result", [(0, "GIC0001"), (1, "GIC0002"), (9998, "GIC9999")])
-def test_generate_booking_id(last_booking_id_index, result):
-    booking_id = generate_booking_id(last_booking_id_index)
+@pytest.mark.parametrize("last_booking_number, result", [(0, "GIC0001"), (1, "GIC0002"), (9998, "GIC9999")])
+def test_generate_booking_id(last_booking_number, result):
+    booking_id = generate_booking_id(last_booking_number)
     assert booking_id == result
 
 
@@ -43,7 +43,7 @@ def test_get_furthest_row_index_with_errors(rows, cols, booked_seats):
 
 
 @pytest.mark.parametrize(
-    "rows, cols, booked_seats, no_of_seats, expected_seats",
+    "rows, cols, booked_seats, num_tickets, expected_seats",
     [
         (8, 10, [], 4, [Seat(0, 3, "Reserved"), Seat(0, 4, "Reserved"), Seat(0, 5, "Reserved"), Seat(0, 6, "Reserved")]),
         (
@@ -92,17 +92,17 @@ def test_get_furthest_row_index_with_errors(rows, cols, booked_seats):
         ),
     ],
 )
-def test_generate_default_seats(rows, cols, booked_seats, no_of_seats, expected_seats):
+def test_generate_default_seats(rows, cols, booked_seats, num_tickets, expected_seats):
     seat_map = [[Seat(row, col, "Empty") for col in range(cols)] for row in range(rows)]
     for row, col in booked_seats:
         seat_map[row][col].update_state("Booked")
-    result_seats = generate_default_seats(seat_map, no_of_seats)
-    assert len(result_seats) == no_of_seats
+    result_seats = generate_default_seats(seat_map, num_tickets)
+    assert len(result_seats) == num_tickets
     assert all(seat in expected_seats and seat.state == "Reserved" for seat in result_seats)
 
 
 @pytest.mark.parametrize(
-    "rows, cols, booked_seats, no_of_seats, start_row, start_col, expected_seats",
+    "rows, cols, booked_seats, num_tickets, start_row, start_col, expected_seats",
     [
         (8, 10, [], 4, 1, 2, [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved"), Seat(1, 4, "Reserved"), Seat(1, 5, "Reserved")]),
         (
@@ -144,10 +144,10 @@ def test_generate_default_seats(rows, cols, booked_seats, no_of_seats, expected_
         ),
     ],
 )
-def test_generate_seats_by_position(rows, cols, booked_seats, no_of_seats, start_row, start_col, expected_seats):
+def test_generate_seats_by_position(rows, cols, booked_seats, num_tickets, start_row, start_col, expected_seats):
     seat_map = [[Seat(row, col, "Empty") for col in range(cols)] for row in range(rows)]
     for row, col in booked_seats:
         seat_map[row][col].update_state("Booked")
-    result_seats = generate_seats_by_position(seat_map, no_of_seats, start_row, start_col)
-    assert len(result_seats) == no_of_seats
+    result_seats = generate_seats_by_position(seat_map, num_tickets, start_row, start_col)
+    assert len(result_seats) == num_tickets
     assert all(seat in expected_seats and seat.state == "Reserved" for seat in result_seats)

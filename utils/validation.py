@@ -54,3 +54,15 @@ def validate_number_of_tickets(number_of_tickets_str: str) -> tuple:
         return True, number_of_tickets
     except ValueError:
         return False, None
+
+
+def validate_string_input(input_str: str) -> tuple:
+    """Validate string input.
+    Args:
+        input_str (str): given string input
+    Returns:
+        (tuple) the value to indicate the string input is valid or not.
+    """
+    if input_str is None or input_str.strip() == "":
+        return False, None
+    return True, input_str

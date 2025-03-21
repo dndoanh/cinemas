@@ -4,14 +4,14 @@ import utils.constants as consts
 from models.seat import Seat
 
 
-def generate_booking_id(last_booking_id_index: int) -> str:
+def generate_booking_id(last_booking_number: int) -> str:
     """Generate new booking id with prefix 'GIC'
     Args:
-        last_booking_id_index(int): last booking id number.
+        last_booking_number(int): last booking id number.
     Returns:
         new booking id.
     """
-    next_id = "0000" + str(last_booking_id_index + 1)
+    next_id = "0000" + str(last_booking_number + 1)
     return f"{consts.BOOKING_ID_PREFIX}{next_id[len(next_id) - 4:]}"
 
 
@@ -30,18 +30,18 @@ def get_furthest_row_idx(seat_map: List[List[Seat]]) -> int:
     raise ValueError("There is no row which has at least one Empty seat.")
 
 
-def generate_default_seats(seat_map: List[List[Seat]], no_of_seats: int) -> List[Seat]:
+def generate_default_seats(seat_map: List[List[Seat]], num_tickets: int) -> List[Seat]:
     """Do generate default seats reservation
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
-        no_of_seats(int): number of seats to reserve.
+        num_tickets(int): number of tickets to reserve.
     Returns:
         a list of seats for reservation.
     """
     result_seats = []
     start_row = get_furthest_row_idx(seat_map)
-    while len(result_seats) < no_of_seats:
-        result_seats = reserve_row_by_mid_most(seat_map, start_row, no_of_seats, result_seats)
+    while len(result_seats) < num_tickets:
+        result_seats = reserve_row_by_mid_most(seat_map, start_row, num_tickets, result_seats)
         start_row += 1
     return result_seats
 
@@ -51,7 +51,7 @@ def reserve_row_by_mid_most(seat_map: List[List[Seat]], start_row: int, no_of_se
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
         start_row(int): the row index to start looking up.
-        no_of_seats(int): number of seats to reserve.
+        no_of_seats(int): number of tickets to reserve.
         result_seats(List[Seat]): a list of seats which are reserved.
     Returns:
         a list of seats for reservation.
@@ -83,7 +83,7 @@ def reserve_row_by_right_most(seat_map: List[List[Seat]], start_row: int, start_
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
         start_row(int): the row index to start looking up.
         start_col(int): the column index to start looking up.
-        no_of_seats(int): number of seats to reserve.
+        no_of_seats(int): number of tickets to reserve.
         result_seats(List[Seat]): a list of seats which are reserved.
     Returns:
         a list of seats for reservation.
@@ -100,7 +100,7 @@ def generate_seats_by_position(seat_map: List[List[Seat]], no_of_seats: int, sta
     """Do generate seats at specific position for reservation.
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
-        no_of_seats(int): number of seats to reserve.
+        no_of_seats(int): number of tickets to reserve.
         start_row(int): the row index to start looking up.
         start_col(int): the column index to start looking up.
     Returns:

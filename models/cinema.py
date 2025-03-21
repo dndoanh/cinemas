@@ -12,7 +12,7 @@ class Cinema:
         Args:
             movie_title(str): the title of the movie.
             rows(str): number of rows in of the cinema.
-            seats_per_row(str): number of seats in each row.
+            seats_per_row(str): number of tickets in each row.
         """
         self.movie_title = movie_title
         self.rows = rows
@@ -36,26 +36,41 @@ class Cinema:
     def exit_processing(self) -> None:
         """End processing."""
         self.processing_mode = None
+        self.current_booking = None
+        self.current_checking = None
 
-    def create_default_booking(self, num_seats) -> None:
+    def create_default_booking(self, num_tickets: int) -> None:
         """Auto create new booking reservation.
         Args:
-            num_seats(int): number of seats to order.
+            num_tickets(int): number of tickets to order.
         Returns:
             a booking with default reserved seats.
         """
+        if num_tickets > self.available_seats:
+            raise ValueError(f"Sorry, there are only {self.available_seats} seats available.")
         booking_id = generate_booking_id(self.last_booking_number)
-        seats = generate_default_seats(self.seat_map, num_seats)
+        seats = generate_default_seats(self.seat_map, num_tickets)
         self.current_booking = Booking(booking_id, consts.BOOKING_STATUS_RESERVED, seats)
 
-    def change_seat_position(self, start_position: str) -> None:
-        """Re-generate booking seats for the specific starting position.
+    def is_seating_position_exist(self, seat_position: str) -> bool:
+        """Check whether given seat position exist in seat map or not.
         Args:
-            start_position(str): starting seat position.
+            seat_position(str): the seat position in row and column format. E.g. A08
+        Returns:
+            a boolean value to indicate the seat position exist or not.
         """
+        return seat_position in self.index_map
+
+    def change_seating_position(self, seating_position: str) -> None:
+        """Re-generate booking seats with the specific starting position.
+        Args:
+            seating_position(str): seating position.
+        """
+        if seating_position not in self.index_map:
+            raise KeyError("Invalid seat position. Please try again.")
         self.current_booking.release_reserved_seats()
         num_seats = len(self.current_booking.seats)
-        start_row, start_col = self.index_map[start_position]
+        start_row, start_col = self.index_map[seating_position]
         seats = generate_seats_by_position(self.seat_map, num_seats, start_row, start_col)
         self.current_booking.update_seats(seats)
 
@@ -66,6 +81,15 @@ class Cinema:
         self.current_booking = None
         self.last_booking_number += 1
 
+    def is_booking_id_exist(self, booking_id: str) -> bool:
+        """Check whether given booking id exist in seat map or not.
+        Args:
+            booking_id(str): the booking id
+        Returns:
+            a boolean value to indicate the booking id exist or not.
+        """
+        return any([booking for booking in self.bookings if booking.booking_id == booking_id])
+
     def start_checking(self) -> None:
         """Start processing in checking mode."""
         self.processing_mode = consts.PROCESSING_CHECKING_MODE
@@ -75,6 +99,8 @@ class Cinema:
         bookings = [booking for booking in self.bookings if booking.booking_id == booking_id]
         if any(bookings):
             self.current_checking = bookings[0]
+        else:
+            raise ValueError("Invalid booking id. Please try again.")
 
     def screen_display(self) -> str:
         """Display the current state of the cinema in string format.

@@ -52,7 +52,7 @@ def test_exit_processing(movie_title, rows, seats_per_row):
 
 
 @pytest.mark.parametrize(
-    "cinema, num_seats, booking_id, screen_display",
+    "cinema, num_tickets, booking_id, screen_display",
     [
         (
             Cinema("Inception", 8, 10),
@@ -74,11 +74,11 @@ def test_exit_processing(movie_title, rows, seats_per_row):
         )
     ],
 )
-def test_create_default_booking(cinema, num_seats, booking_id, screen_display):
-    cinema.create_default_booking(num_seats)
+def test_create_default_booking(cinema, num_tickets, booking_id, screen_display):
+    cinema.create_default_booking(num_tickets)
     assert cinema.current_booking.booking_id == booking_id
     assert cinema.current_booking.status == consts.BOOKING_STATUS_RESERVED
-    assert len(cinema.current_booking.seats) == num_seats
+    assert len(cinema.current_booking.seats) == num_tickets
     assert all(seat.state == consts.SEAT_STATE_RESERVED for seat in cinema.current_booking.seats)
     display_str = cinema.screen_display()
     for line in screen_display:
@@ -86,7 +86,21 @@ def test_create_default_booking(cinema, num_seats, booking_id, screen_display):
 
 
 @pytest.mark.parametrize(
-    "cinema, num_seats, start_position, booking_id, screen_display",
+    "cinema, num_tickets",
+    [
+        (
+            Cinema("Inception", 8, 10),
+            81,
+        )
+    ],
+)
+def test_create_default_booking_with_exceeding_available_seats(cinema, num_tickets):
+    with pytest.raises(ValueError):
+        cinema.create_default_booking(num_tickets)
+
+
+@pytest.mark.parametrize(
+    "cinema, num_tickets, start_position, booking_id, screen_display",
     [
         (
             Cinema("Inception", 8, 10),
@@ -109,12 +123,12 @@ def test_create_default_booking(cinema, num_seats, booking_id, screen_display):
         )
     ],
 )
-def test_change_seat_position(cinema, num_seats, start_position, booking_id, screen_display):
-    cinema.create_default_booking(num_seats)
-    cinema.change_seat_position(start_position)
+def test_change_seat_position(cinema, num_tickets, start_position, booking_id, screen_display):
+    cinema.create_default_booking(num_tickets)
+    cinema.change_seating_position(start_position)
     assert cinema.current_booking.booking_id == booking_id
     assert cinema.current_booking.status == consts.BOOKING_STATUS_RESERVED
-    assert len(cinema.current_booking.seats) == num_seats
+    assert len(cinema.current_booking.seats) == num_tickets
     assert all(seat.state == consts.SEAT_STATE_RESERVED for seat in cinema.current_booking.seats)
     display_str = cinema.screen_display()
     for line in screen_display:
@@ -122,7 +136,37 @@ def test_change_seat_position(cinema, num_seats, start_position, booking_id, scr
 
 
 @pytest.mark.parametrize(
-    "cinema, num_seats, booking_id, screen_display",
+    "cinema, num_tickets, start_position",
+    [
+        (
+            Cinema("Inception", 8, 10),
+            4,
+            "B500",
+        )
+    ],
+)
+def test_change_seat_position_with_invalid_position(cinema, num_tickets, start_position):
+    with pytest.raises(KeyError):
+        cinema.create_default_booking(num_tickets)
+        cinema.change_seating_position(start_position)
+
+
+@pytest.mark.parametrize(
+    "cinema, seat_position, is_exist",
+    [
+        (Cinema("Inception", 8, 10), "A500", False),
+        (Cinema("Inception", 8, 10), "Z03", False),
+        (Cinema("Inception", 8, 10), "A10", True),
+        (Cinema("Inception", 8, 10), "B03", True),
+    ],
+)
+def test_is_seat_position_exist(cinema, seat_position, is_exist):
+    result = cinema.is_seating_position_exist(seat_position)
+    assert result == is_exist
+
+
+@pytest.mark.parametrize(
+    "cinema, num_tickets, booking_id, screen_display",
     [
         (
             Cinema("Inception", 8, 10),
@@ -137,25 +181,40 @@ def test_change_seat_position(cinema, num_seats, start_position, booking_id, scr
                 "E . . . . . . . . . .",
                 "D . . . . . . . . . .",
                 "C . . . . . . . . . .",
-                "B . . # # # # . . . .",
-                "A . . . . . . . . . .",
+                "B . . . . . . . . . .",
+                "A . . . # # # # . . .",
                 "  1 2 3 4 5 6 7 8 9 10",
             ],
         )
     ],
 )
-def test_confirm_booking(cinema, num_seats, booking_id, screen_display):
-    cinema.create_default_booking(num_seats)
+def test_confirm_booking(cinema, num_tickets, booking_id, screen_display):
+    cinema.create_default_booking(num_tickets)
     cinema.confirm_booking()
     assert cinema.bookings[0].booking_id == booking_id
     assert cinema.bookings[0].status == consts.BOOKING_STATUS_CONFIRMED
-    assert len(cinema.bookings[0].seats) == num_seats
+    assert len(cinema.bookings[0].seats) == num_tickets
     assert all(seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.bookings[0].seats)
     assert cinema.current_booking is None
     assert cinema.last_booking_number == 1
     display_str = cinema.screen_display()
     for line in screen_display:
         assert line in display_str
+
+
+@pytest.mark.parametrize(
+    "cinema, num_tickets, booking_id, is_exist",
+    [
+        (Cinema("Inception", 8, 10), 4, "ABC0001", False),
+        (Cinema("Inception", 8, 10), 4, "GIC0002", False),
+        (Cinema("Inception", 8, 10), 4, "GIC0001", True),
+    ],
+)
+def test_is_booking_id_exist(cinema, num_tickets, booking_id, is_exist):
+    cinema.create_default_booking(num_tickets)
+    cinema.confirm_booking()
+    result = cinema.is_booking_id_exist(booking_id)
+    assert result == is_exist
 
 
 @pytest.mark.parametrize("movie_title, rows, seats_per_row", [("Inception", 8, 10)])
@@ -166,7 +225,7 @@ def test_start_checking(movie_title, rows, seats_per_row):
 
 
 @pytest.mark.parametrize(
-    "cinema, num_seats, booking_id, screen_display",
+    "cinema, num_tickets, booking_id, screen_display",
     [
         (
             Cinema("Inception", 8, 10),
@@ -188,15 +247,27 @@ def test_start_checking(movie_title, rows, seats_per_row):
         )
     ],
 )
-def test_check_booking(cinema, num_seats, booking_id, screen_display):
-    cinema.create_default_booking(num_seats)
+def test_check_booking(cinema, num_tickets, booking_id, screen_display):
+    cinema.create_default_booking(num_tickets)
     cinema.confirm_booking()
     cinema.start_checking()
     cinema.check_booking(booking_id)
     assert cinema.current_checking.booking_id == booking_id
     assert cinema.current_checking.status == consts.BOOKING_STATUS_CONFIRMED
-    assert len(cinema.current_checking.seats) == num_seats
+    assert len(cinema.current_checking.seats) == num_tickets
     assert all(seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.current_checking.seats)
     display_str = cinema.screen_display()
     for line in screen_display:
         assert line in display_str
+
+
+@pytest.mark.parametrize(
+    "cinema, num_tickets, booking_id",
+    [(Cinema("Inception", 8, 10), 4, "GIC8888")],
+)
+def test_check_booking_with_invalid_booking_id(cinema, num_tickets, booking_id):
+    with pytest.raises(ValueError):
+        cinema.create_default_booking(num_tickets)
+        cinema.confirm_booking()
+        cinema.start_checking()
+        cinema.check_booking(booking_id)
