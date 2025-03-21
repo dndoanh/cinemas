@@ -5,7 +5,6 @@ from models.seat import Seat
 
 
 class Booking:
-
     def __init__(self, booking_id: str, status: str, seats: List[Seat]):
         """Initialize an object of the booking.
         Args:
@@ -18,13 +17,26 @@ class Booking:
         if booking_id is None or booking_id == "":
             raise ValueError("Invalid booking id. Booking id must be not blank.")
         self.booking_id = booking_id
-        if status not in [consts.BOOKING_STATUS_RESERVED, consts.BOOKING_STATUS_CONFIRMED]:
-            raise ValueError("Invalid booking status. The status must be either Reserved or Confirmed.")
+        if status not in [
+            consts.BOOKING_STATUS_RESERVED,
+            consts.BOOKING_STATUS_CONFIRMED,
+        ]:
+            raise ValueError(
+                "Invalid booking status. The status must be either Reserved or Confirmed."
+            )
         self.status = status
-        if status == consts.BOOKING_STATUS_RESERVED and any([seat for seat in seats if seat.state != consts.SEAT_STATE_RESERVED]):
-            raise ValueError("Invalid booking seats. For Reserved booking, all seat's state must be Reserved.")
-        if status == consts.BOOKING_STATUS_CONFIRMED and any([seat for seat in seats if seat.state != consts.SEAT_STATE_BOOKED]):
-            raise ValueError("Invalid booking seats. For Confirmed booking, all seat's state must be Booked.")
+        if status == consts.BOOKING_STATUS_RESERVED and any(
+            [seat for seat in seats if seat.state != consts.SEAT_STATE_RESERVED]
+        ):
+            raise ValueError(
+                "Invalid booking seats. For Reserved booking, all seat's state must be Reserved."
+            )
+        if status == consts.BOOKING_STATUS_CONFIRMED and any(
+            [seat for seat in seats if seat.state != consts.SEAT_STATE_BOOKED]
+        ):
+            raise ValueError(
+                "Invalid booking seats. For Confirmed booking, all seat's state must be Booked."
+            )
         self.seats = seats
 
     def update_status(self, new_status: str) -> None:
@@ -34,10 +46,19 @@ class Booking:
         Args:
             new_status(str): the new status of the booking.
         """
-        if new_status not in [consts.BOOKING_STATUS_RESERVED, consts.BOOKING_STATUS_CONFIRMED]:
-            raise ValueError("Invalid booking status. The status must be either Reserved or Confirmed.")
+        if new_status not in [
+            consts.BOOKING_STATUS_RESERVED,
+            consts.BOOKING_STATUS_CONFIRMED,
+        ]:
+            raise ValueError(
+                "Invalid booking status. The status must be either Reserved or Confirmed."
+            )
         self.status = new_status
-        new_seat_state = consts.SEAT_STATE_RESERVED if new_status == consts.BOOKING_STATUS_RESERVED else consts.SEAT_STATE_BOOKED
+        new_seat_state = (
+            consts.SEAT_STATE_RESERVED
+            if new_status == consts.BOOKING_STATUS_RESERVED
+            else consts.SEAT_STATE_BOOKED
+        )
         for seat in self.seats:
             seat.update_state(new_seat_state)
 

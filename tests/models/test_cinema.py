@@ -19,7 +19,7 @@ def test_initialization(movie_title, rows, seats_per_row):
     assert cinema.current_checking is None
     for row in range(rows):
         for col in range(seats_per_row):
-            col_str = f"0{col+1}"
+            col_str = f"0{col + 1}"
             col_str = col_str[len(col_str) - 2 :]
             key = f"{consts.ALPHABET_LIST[row]}{col_str}"
             assert key in cinema.index_map
@@ -79,7 +79,10 @@ def test_create_default_booking(cinema, num_tickets, booking_id, screen_display)
     assert cinema.current_booking.booking_id == booking_id
     assert cinema.current_booking.status == consts.BOOKING_STATUS_RESERVED
     assert len(cinema.current_booking.seats) == num_tickets
-    assert all(seat.state == consts.SEAT_STATE_RESERVED for seat in cinema.current_booking.seats)
+    assert all(
+        seat.state == consts.SEAT_STATE_RESERVED
+        for seat in cinema.current_booking.seats
+    )
     display_str = cinema.screen_display()
     for line in screen_display:
         assert line in display_str
@@ -123,13 +126,18 @@ def test_create_default_booking_with_exceeding_available_seats(cinema, num_ticke
         )
     ],
 )
-def test_change_seat_position(cinema, num_tickets, start_position, booking_id, screen_display):
+def test_change_seat_position(
+    cinema, num_tickets, start_position, booking_id, screen_display
+):
     cinema.create_default_booking(num_tickets)
     cinema.change_seating_position(start_position)
     assert cinema.current_booking.booking_id == booking_id
     assert cinema.current_booking.status == consts.BOOKING_STATUS_RESERVED
     assert len(cinema.current_booking.seats) == num_tickets
-    assert all(seat.state == consts.SEAT_STATE_RESERVED for seat in cinema.current_booking.seats)
+    assert all(
+        seat.state == consts.SEAT_STATE_RESERVED
+        for seat in cinema.current_booking.seats
+    )
     display_str = cinema.screen_display()
     for line in screen_display:
         assert line in display_str
@@ -145,7 +153,9 @@ def test_change_seat_position(cinema, num_tickets, start_position, booking_id, s
         )
     ],
 )
-def test_change_seat_position_with_invalid_position(cinema, num_tickets, start_position):
+def test_change_seat_position_with_invalid_position(
+    cinema, num_tickets, start_position
+):
     with pytest.raises(KeyError):
         cinema.create_default_booking(num_tickets)
         cinema.change_seating_position(start_position)
@@ -194,7 +204,9 @@ def test_confirm_booking(cinema, num_tickets, booking_id, screen_display):
     assert cinema.bookings[0].booking_id == booking_id
     assert cinema.bookings[0].status == consts.BOOKING_STATUS_CONFIRMED
     assert len(cinema.bookings[0].seats) == num_tickets
-    assert all(seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.bookings[0].seats)
+    assert all(
+        seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.bookings[0].seats
+    )
     assert cinema.current_booking is None
     assert cinema.last_booking_number == 1
     display_str = cinema.screen_display()
@@ -255,7 +267,9 @@ def test_check_booking(cinema, num_tickets, booking_id, screen_display):
     assert cinema.current_checking.booking_id == booking_id
     assert cinema.current_checking.status == consts.BOOKING_STATUS_CONFIRMED
     assert len(cinema.current_checking.seats) == num_tickets
-    assert all(seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.current_checking.seats)
+    assert all(
+        seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.current_checking.seats
+    )
     display_str = cinema.screen_display()
     for line in screen_display:
         assert line in display_str

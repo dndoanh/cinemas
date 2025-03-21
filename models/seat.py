@@ -2,7 +2,6 @@ import utils.constants as consts
 
 
 class Seat:
-
     def __init__(self, row: int, col: int, state: str) -> None:
         """Initialize an object of the seat.
         Args:
@@ -13,8 +12,14 @@ class Seat:
         """
         self.row = row
         self.col = col
-        if state not in [consts.SEAT_STATE_EMPTY, consts.SEAT_STATE_RESERVED, consts.SEAT_STATE_BOOKED]:
-            raise ValueError("Invalid seat state. The seat state must be one of [Empty, Reserved, Booked].")
+        if state not in [
+            consts.SEAT_STATE_EMPTY,
+            consts.SEAT_STATE_RESERVED,
+            consts.SEAT_STATE_BOOKED,
+        ]:
+            raise ValueError(
+                "Invalid seat state. The seat state must be one of [Empty, Reserved, Booked]."
+            )
         self.state = state
 
     def __eq__(self, other) -> bool:
@@ -47,6 +52,12 @@ class Seat:
         Args:
             new_state(str): new state of the seat.
         """
-        if new_state not in [consts.SEAT_STATE_EMPTY, consts.SEAT_STATE_RESERVED, consts.SEAT_STATE_BOOKED]:
-            raise ValueError("Invalid seat state. The seat state must be one of [Empty, Reserved, Booked].")
+        if new_state not in [
+            consts.SEAT_STATE_EMPTY,
+            consts.SEAT_STATE_RESERVED,
+            consts.SEAT_STATE_BOOKED,
+        ]:
+            raise ValueError(
+                "Invalid seat state. The seat state must be one of [Empty, Reserved, Booked]."
+            )
         self.state = new_state

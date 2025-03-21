@@ -11,15 +11,20 @@ def validate_title_rows_seats_per_row(title_rows_seats_per_row_str: str) -> tupl
     if not title_rows_seats_per_row_str:
         return False, None, None, None
     title_rows_seats_per_row = title_rows_seats_per_row_str.split()
-    if len(title_rows_seats_per_row) != 3:
+    if len(title_rows_seats_per_row) < 3:
         return False, None, None, None
     try:
-        title = title_rows_seats_per_row[0]
-        rows = int(title_rows_seats_per_row[1])
-        seats_per_row = int(title_rows_seats_per_row[2])
+        title = " ".join(title_rows_seats_per_row[: len(title_rows_seats_per_row) - 2])
+        rows = int(title_rows_seats_per_row[len(title_rows_seats_per_row) - 2])
+        seats_per_row = int(title_rows_seats_per_row[len(title_rows_seats_per_row) - 1])
         if not title:
             return False, None, None, None
-        if rows <= 0 or rows > consts.MAX_ROWS or seats_per_row <= 0 or seats_per_row > consts.MAX_COLUMNS:
+        if (
+            rows <= 0
+            or rows > consts.MAX_ROWS
+            or seats_per_row <= 0
+            or seats_per_row > consts.MAX_COLUMNS
+        ):
             return False, None, None, None
         return True, title, rows, seats_per_row
     except ValueError:

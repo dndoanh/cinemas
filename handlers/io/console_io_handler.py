@@ -2,7 +2,6 @@ from handlers.io.io_handler import IOHandler
 
 
 class ConsoleIOHandler(IOHandler):
-
     def input_handler(self) -> str:
         """Handle input with console."""
         return input()

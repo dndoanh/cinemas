@@ -3,7 +3,9 @@ import pytest
 from models.seat import Seat
 
 
-@pytest.mark.parametrize("row, col, state", [(1, 2, "Empty"), (1, 3, "Reserved"), (1, 4, "Booked")])
+@pytest.mark.parametrize(
+    "row, col, state", [(1, 2, "Empty"), (1, 3, "Reserved"), (1, 4, "Booked")]
+)
 def test_initialization(row, col, state):
     seat = Seat(row, col, state)
     assert isinstance(seat, Seat)
@@ -15,7 +17,7 @@ def test_initialization(row, col, state):
 @pytest.mark.parametrize("row, col, state", [(1, 2, None), (1, 3, ""), (1, 4, "Abc")])
 def test_initialization_with_invalid_seat_state(row, col, state):
     with pytest.raises(ValueError):
-        seat = Seat(row, col, state)
+        Seat(row, col, state)
 
 
 @pytest.mark.parametrize(
@@ -48,7 +50,11 @@ def test_str(seat, display_str):
 
 @pytest.mark.parametrize(
     "seat, new_state",
-    [(Seat(1, 2, "Empty"), "Reserved"), (Seat(1, 2, "Reserved"), "Booked"), (Seat(1, 2, "Booked"), "Reserved")],
+    [
+        (Seat(1, 2, "Empty"), "Reserved"),
+        (Seat(1, 2, "Reserved"), "Booked"),
+        (Seat(1, 2, "Booked"), "Reserved"),
+    ],
 )
 def test_update_state(seat, new_state):
     seat.update_state(new_state)
@@ -57,7 +63,11 @@ def test_update_state(seat, new_state):
 
 @pytest.mark.parametrize(
     "seat, new_state",
-    [(Seat(1, 2, "Empty"), None), (Seat(1, 2, "Reserved"), ""), (Seat(1, 2, "Booked"), "Pre-booked")],
+    [
+        (Seat(1, 2, "Empty"), None),
+        (Seat(1, 2, "Reserved"), ""),
+        (Seat(1, 2, "Booked"), "Pre-booked"),
+    ],
 )
 def test_update_state_with_invalid_new_state(seat, new_state):
     with pytest.raises(ValueError):

@@ -11,7 +11,10 @@ def test_input(monkeypatch, input_value, received_value):
     assert io_handler.input_handler() == received_value
 
 
-@pytest.mark.parametrize("output_value, expected_output_value", [(None, "None\n"), ("", "\n"), ("Hello World", "Hello World\n")])
+@pytest.mark.parametrize(
+    "output_value, expected_output_value",
+    [(None, "None\n"), ("", "\n"), ("Hello World", "Hello World\n")],
+)
 def test_output(capfd, output_value, expected_output_value):
     io_handler: IOHandler = ConsoleIOHandler()
     io_handler.output_handler(output_value)

@@ -1,6 +1,11 @@
 import pytest
 
-from utils.validation import validate_menu_selection, validate_number_of_tickets, validate_string_input, validate_title_rows_seats_per_row
+from utils.validation import (
+    validate_menu_selection,
+    validate_number_of_tickets,
+    validate_string_input,
+    validate_title_rows_seats_per_row,
+)
 
 
 @pytest.mark.parametrize(
@@ -20,6 +25,8 @@ from utils.validation import validate_menu_selection, validate_number_of_tickets
         ("Inception 27 10", (False, None, None, None)),
         ("Inception 26 55", (False, None, None, None)),
         ("Inception 8 10", (True, "Inception", 8, 10)),
+        ("Blue Sky 8 10", (True, "Blue Sky", 8, 10)),
+        ("Rooftop Sky Garden 26 50", (True, "Rooftop Sky Garden", 26, 50)),
     ],
 )
 def test_validate_title_rows_seats_per_row(title_rows_seats_per_row_str, is_valid):

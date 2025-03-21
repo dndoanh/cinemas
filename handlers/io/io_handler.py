@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class IOHandler(ABC):
-
     @abstractmethod
     def input_handler(self) -> str:
         """Handle input."""

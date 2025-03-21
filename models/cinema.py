@@ -1,11 +1,15 @@
 import utils.constants as consts
 from models.booking import Booking
 from models.seat import Seat
-from utils.booking_utils import build_index_map, generate_booking_id, generate_default_seats, generate_seats_by_position
+from utils.booking_utils import (
+    build_index_map,
+    generate_booking_id,
+    generate_default_seats,
+    generate_seats_by_position,
+)
 
 
 class Cinema:
-
     def __init__(self, movie_title: str, rows: int, seats_per_row: int) -> None:
         """Initialize an object of the cinema.
              rows * seats_per_row empty seats.
@@ -17,7 +21,10 @@ class Cinema:
         self.movie_title = movie_title
         self.rows = rows
         self.seats_per_row = seats_per_row
-        self.seat_map = [[Seat(row, col, consts.SEAT_STATE_EMPTY) for col in range(seats_per_row)] for row in range(rows)]
+        self.seat_map = [
+            [Seat(row, col, consts.SEAT_STATE_EMPTY) for col in range(seats_per_row)]
+            for row in range(rows)
+        ]
         self.index_map = build_index_map(rows, seats_per_row)
         self.last_booking_number = 0
         self.bookings = []
@@ -27,7 +34,17 @@ class Cinema:
 
     @property
     def available_seats(self) -> int:
-        return sum([sum([self.seat_map[row][col].state == consts.SEAT_STATE_EMPTY for col in range(self.seats_per_row)]) for row in range(self.rows)])
+        return sum(
+            [
+                sum(
+                    [
+                        self.seat_map[row][col].state == consts.SEAT_STATE_EMPTY
+                        for col in range(self.seats_per_row)
+                    ]
+                )
+                for row in range(self.rows)
+            ]
+        )
 
     def start_booking(self) -> None:
         """Start processing in booking mode."""
@@ -47,10 +64,14 @@ class Cinema:
             a booking with default reserved seats.
         """
         if num_tickets > self.available_seats:
-            raise ValueError(f"Sorry, there are only {self.available_seats} seats available.")
+            raise ValueError(
+                f"Sorry, there are only {self.available_seats} seats available."
+            )
         booking_id = generate_booking_id(self.last_booking_number)
         seats = generate_default_seats(self.seat_map, num_tickets)
-        self.current_booking = Booking(booking_id, consts.BOOKING_STATUS_RESERVED, seats)
+        self.current_booking = Booking(
+            booking_id, consts.BOOKING_STATUS_RESERVED, seats
+        )
 
     def is_seating_position_exist(self, seat_position: str) -> bool:
         """Check whether given seat position exist in seat map or not.
@@ -71,7 +92,9 @@ class Cinema:
         self.current_booking.release_reserved_seats()
         num_seats = len(self.current_booking.seats)
         start_row, start_col = self.index_map[seating_position]
-        seats = generate_seats_by_position(self.seat_map, num_seats, start_row, start_col)
+        seats = generate_seats_by_position(
+            self.seat_map, num_seats, start_row, start_col
+        )
         self.current_booking.update_seats(seats)
 
     def confirm_booking(self) -> None:
@@ -88,7 +111,9 @@ class Cinema:
         Returns:
             a boolean value to indicate the booking id exist or not.
         """
-        return any([booking for booking in self.bookings if booking.booking_id == booking_id])
+        return any(
+            [booking for booking in self.bookings if booking.booking_id == booking_id]
+        )
 
     def start_checking(self) -> None:
         """Start processing in checking mode."""
@@ -96,7 +121,9 @@ class Cinema:
 
     def check_booking(self, booking_id: str) -> None:
         """Do check the booking with given booking id."""
-        bookings = [booking for booking in self.bookings if booking.booking_id == booking_id]
+        bookings = [
+            booking for booking in self.bookings if booking.booking_id == booking_id
+        ]
         if any(bookings):
             self.current_checking = bookings[0]
         else:
@@ -110,17 +137,31 @@ class Cinema:
         display_str = "Selected seats:\n"
         display_str += " ".join(list("SCREEN")) + "\n"
         for row in range(self.rows - 1, -1, -1):
-            line_str = consts.ALPHABET_LIST[row]
-            for col in range(self.seats_per_row):
-                if self.processing_mode == consts.PROCESSING_CHECKING_MODE and any(
-                    [seat for seat in self.current_checking.seats if seat.row == row and seat.col == col]
-                ):
-                    line_str += consts.DISPLAY_RESERVED
-                else:
-                    line_str += str(self.seat_map[row][col])
-            display_str += " ".join(list(line_str)) + "\n"
+            display_str += self._get_mid_line(row)
+        display_str += self._get_bottom_line()
+        return display_str
+
+    def _get_mid_line(self, row) -> str:
+        """Get middle line of the screen."""
+        line_str = consts.ALPHABET_LIST[row]
+        for col in range(self.seats_per_row):
+            if self.processing_mode == consts.PROCESSING_CHECKING_MODE and any(
+                [
+                    seat
+                    for seat in self.current_checking.seats
+                    if seat.row == row and seat.col == col
+                ]
+            ):
+                line_str += consts.DISPLAY_RESERVED
+            else:
+                line_str += str(self.seat_map[row][col])
+        line_str += " ".join(list(line_str)) + "\n"
+        return line_str
+
+    def _get_bottom_line(self) -> str:
+        """Get bottom line of the screen."""
         bottom_line_str = " "
         for col in range(1, self.seats_per_row + 1):
             bottom_line_str += " " + str(col)
-        display_str += bottom_line_str + "\n"
-        return display_str
+        bottom_line_str += "\n"
+        return bottom_line_str

@@ -5,7 +5,11 @@ from models.seat import Seat
 
 
 @pytest.mark.parametrize(
-    "booking_id, status, seats", [("ABC0001", "Reserved", [Seat(1, 2, "Reserved")]), ("ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")])]
+    "booking_id, status, seats",
+    [
+        ("ABC0001", "Reserved", [Seat(1, 2, "Reserved")]),
+        ("ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")]),
+    ],
 )
 def test_initialization(booking_id, status, seats):
     booking = Booking(booking_id, status, seats)
@@ -38,8 +42,20 @@ def test_invalid_booking(booking_id, status, seats):
 @pytest.mark.parametrize(
     "booking, new_status, new_state",
     [
-        (Booking("ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]), "Confirmed", "Booked"),
-        (Booking("ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")]), "Reserved", "Reserved"),
+        (
+            Booking(
+                "ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]
+            ),
+            "Confirmed",
+            "Booked",
+        ),
+        (
+            Booking(
+                "ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")]
+            ),
+            "Reserved",
+            "Reserved",
+        ),
     ],
 )
 def test_update_status(booking, new_status, new_state):
@@ -51,9 +67,24 @@ def test_update_status(booking, new_status, new_state):
 @pytest.mark.parametrize(
     "booking, new_status",
     [
-        (Booking("ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]), None),
-        (Booking("ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]), ""),
-        (Booking("ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")]), "Pre-confirmed"),
+        (
+            Booking(
+                "ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]
+            ),
+            None,
+        ),
+        (
+            Booking(
+                "ABC0001", "Reserved", [Seat(1, 2, "Reserved"), Seat(1, 3, "Reserved")]
+            ),
+            "",
+        ),
+        (
+            Booking(
+                "ABC0001", "Confirmed", [Seat(1, 2, "Booked"), Seat(1, 3, "Booked")]
+            ),
+            "Pre-confirmed",
+        ),
     ],
 )
 def test_update_status_with_invalid_new_status(booking, new_status):
