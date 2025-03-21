@@ -34,7 +34,7 @@ pytest --cov .
 ## Assumptions
 1. Upon invalid input (e.g. invalid movie title rows, seats per row; invalid number of tickets, invalid of seating position, invalid booking id), the program will prompt an error message for input again.
 ## Linting
-For linting, use `ruff`. To check the code, run the following command:
+Use `ruff` for linting. To check the code, run the following command:
 ```commandline
 ruff check
 ```
@@ -42,7 +42,7 @@ To format the code, run the following command:
 ```commandline
 ruff format
 ```
-To format import, run the following command:
+To sort import, run the following command:
 ```commandline
 ruff check --select I --fix
 ```
