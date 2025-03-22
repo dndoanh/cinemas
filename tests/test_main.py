@@ -1,3 +1,5 @@
+import pytest
+
 from main import main
 
 
@@ -31,7 +33,8 @@ def test_booking_with_single_ticket(monkeypatch, capfd):
         "Enter booking id, or enter blank to go back to main menu:",
         "Thank you for using GIC Cinemas system. Bye!",
     ]
-    main()
+    with pytest.raises(SystemExit):
+        main()
     output, err = capfd.readouterr()
     for line in expected_outputs:
         assert line in output
@@ -67,7 +70,8 @@ def test_booking_with_single_ticket_with_full_booking(monkeypatch, capfd):
         "Enter booking id, or enter blank to go back to main menu:",
         "Thank you for using GIC Cinemas system. Bye!",
     ]
-    main()
+    with pytest.raises(SystemExit):
+        main()
     output, err = capfd.readouterr()
     for line in expected_outputs:
         assert line in output
@@ -144,7 +148,8 @@ def test_booking_with_multiple_ticket(monkeypatch, capfd):
         "A # # # # # # # # # #",
         "Thank you for using GIC Cinemas system. Bye!",
     ]
-    main()
+    with pytest.raises(SystemExit):
+        main()
     output, err = capfd.readouterr()
     for line in expected_outputs:
         assert line in output
@@ -212,7 +217,8 @@ def test_booking_with_multiple_ticket_with_full_booking(monkeypatch, capfd):
         "B . . o o o o # # # #",
         "Thank you for using GIC Cinemas system. Bye!",
     ]
-    main()
+    with pytest.raises(SystemExit):
+        main()
     output, err = capfd.readouterr()
     for line in expected_outputs:
         assert line in output

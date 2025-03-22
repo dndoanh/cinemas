@@ -1,9 +1,9 @@
-from handlers.cinema_handler import CinemaHandler
+from handlers.booking_handler import BookingHandler
 
 
 def main() -> None:
-    cinema_handler = CinemaHandler()
-    cinema_handler.start()
+    booking_handler = BookingHandler()
+    booking_handler.run()
 
 
 if __name__ == "__main__":

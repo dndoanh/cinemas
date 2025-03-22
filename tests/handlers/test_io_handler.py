@@ -8,7 +8,7 @@ from handlers.io.io_handler import IOHandler
 def test_input(monkeypatch, input_value, received_value):
     monkeypatch.setattr("builtins.input", lambda: input_value)
     io_handler = ConsoleIOHandler()
-    assert io_handler.input_handler() == received_value
+    assert io_handler.input() == received_value
 
 
 @pytest.mark.parametrize(
@@ -17,6 +17,6 @@ def test_input(monkeypatch, input_value, received_value):
 )
 def test_output(capfd, output_value, expected_output_value):
     io_handler: IOHandler = ConsoleIOHandler()
-    io_handler.output_handler(output_value)
+    io_handler.output(output_value)
     output, err = capfd.readouterr()
     assert expected_output_value == output

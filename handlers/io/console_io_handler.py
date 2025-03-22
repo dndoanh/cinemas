@@ -1,11 +1,17 @@
+import sys
+
 from handlers.io.io_handler import IOHandler
 
 
 class ConsoleIOHandler(IOHandler):
-    def input_handler(self) -> str:
+    def input(self) -> str:
         """Handle input with console."""
         return input()
 
-    def output_handler(self, output_str: str) -> None:
+    def output(self, output_str: str) -> None:
         """Handle output with console."""
         print(output_str)
+
+    def exit(self) -> None:
+        """Handle system exit with console."""
+        sys.exit(0)

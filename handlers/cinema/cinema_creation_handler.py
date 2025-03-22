@@ -16,12 +16,12 @@ class CinemaCreationHandler:
             io_handler = ConsoleIOHandler()
         self.io_handler = io_handler
 
-    def create_cinema(self) -> Cinema:
+    def run(self) -> Cinema:
         """Start cinema creation process.
         Returns:
             a new object of Cinema.
         """
-        self.io_handler.output_handler(msg.MSG_BEGIN)
+        self.io_handler.output(msg.MSG_BEGIN)
         movie_title, rows, seats_per_row = self._input_title_rows_seats_per_row()
         cinema = Cinema(movie_title, rows, seats_per_row)
         return cinema
@@ -31,14 +31,12 @@ class CinemaCreationHandler:
         is_valid_input = False
         movie_title, rows, seats_per_row = None, None, None
         while not is_valid_input:
-            title_rows_seats_per_row_str = self.io_handler.input_handler()
+            title_rows_seats_per_row_str = self.io_handler.input()
             is_valid, movie_title, rows, seats_per_row = (
                 validate_title_rows_seats_per_row(title_rows_seats_per_row_str)
             )
             if not is_valid:
-                self.io_handler.output_handler(
-                    msg.MSG_INVALID_MOVIE_TITLE_ROWS_SEATS_PER_ROW
-                )
+                self.io_handler.output(msg.MSG_INVALID_MOVIE_TITLE_ROWS_SEATS_PER_ROW)
             else:
                 is_valid_input = True
         return movie_title, rows, seats_per_row

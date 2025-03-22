@@ -13,7 +13,7 @@ def test_initialization(movie_title, rows, seats_per_row):
     assert cinema.seats_per_row == seats_per_row
     assert cinema.available_seats == rows * seats_per_row
     assert cinema.last_booking_number == 0
-    assert cinema.bookings == []
+    assert cinema.bookings == {}
     assert cinema.processing_mode is None
     assert cinema.current_booking is None
     assert cinema.current_checking is None
@@ -219,11 +219,12 @@ def test_is_seat_position_exist(cinema, seat_position, is_exist):
 def test_confirm_booking(cinema, num_tickets, booking_id, screen_display):
     cinema.create_default_booking(num_tickets)
     cinema.confirm_booking()
-    assert cinema.bookings[0].booking_id == booking_id
-    assert cinema.bookings[0].status == consts.BOOKING_STATUS_CONFIRMED
-    assert len(cinema.bookings[0].seats) == num_tickets
+    assert booking_id in cinema.bookings
+    assert cinema.bookings[booking_id].status == consts.BOOKING_STATUS_CONFIRMED
+    assert len(cinema.bookings[booking_id].seats) == num_tickets
     assert all(
-        seat.state == consts.SEAT_STATE_BOOKED for seat in cinema.bookings[0].seats
+        seat.state == consts.SEAT_STATE_BOOKED
+        for seat in cinema.bookings[booking_id].seats
     )
     assert cinema.current_booking is None
     assert cinema.last_booking_number == 1

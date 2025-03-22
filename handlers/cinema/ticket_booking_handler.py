@@ -1,26 +1,20 @@
 import utils.constants as consts
 import utils.messages as msg
-from handlers.io.console_io_handler import ConsoleIOHandler
+from handlers.cinema.cinema_handler import CinemaHandler
 from handlers.io.io_handler import IOHandler
 from models.cinema import Cinema
 from utils.validation import validate_number_of_tickets, validate_string_input
 
 
-class TicketBookingHandler:
-    def __init__(self, cinema: Cinema, io_handler: IOHandler = None) -> None:
-        """Initialize the handler for ticket booking.
-        Args:
-            cinema(Cinema): the cinema object.
-            io_handler(IOHandler): the handler of input and output.
-                Use console input and output by default.
-        """
-        if io_handler is None:
-            io_handler = ConsoleIOHandler()
-        self.io_handler = io_handler
-        self.cinema = cinema
+class TicketBookingHandler(CinemaHandler):
+    def __init__(self, io_handler: IOHandler = None):
+        """Initialize the handler for ticket booking."""
+        super().__init__(io_handler)
+        self.cinema = None
 
-    def start(self) -> None:
+    def run(self, cinema: Cinema) -> None:
         """Start ticket booking process."""
+        self.cinema = cinema
         self.cinema.start_booking()
         num_tickets = self._input_number_of_tickets()
         if num_tickets is not None:
@@ -31,7 +25,7 @@ class TicketBookingHandler:
     def _auto_create_booking(self, num_tickets: int) -> None:
         """Auto booking reservation creation."""
         self.cinema.create_default_booking(num_tickets)
-        self.io_handler.output_handler(
+        self.io_handler.output(
             msg.MSG_OUTPUT_SUCCESSFULLY_RESERVED.format(
                 num_tickets=num_tickets, movie_title=self.cinema.movie_title
             )
@@ -46,7 +40,7 @@ class TicketBookingHandler:
             if seating_position is None:
                 booking_id = self.cinema.current_booking.booking_id
                 self.cinema.confirm_booking()
-                self.io_handler.output_handler(
+                self.io_handler.output(
                     msg.MSG_OUTPUT_BOOKING_CONFIRMED.format(booking_id=booking_id)
                 )
                 break
@@ -58,17 +52,17 @@ class TicketBookingHandler:
         is_valid_input = False
         num_tickets = None
         while not is_valid_input:
-            self.io_handler.output_handler(msg.MSG_INPUT_NUMBER_OF_TICKETS)
-            num_tickets_str = self.io_handler.input_handler()
+            self.io_handler.output(msg.MSG_INPUT_NUMBER_OF_TICKETS)
+            num_tickets_str = self.io_handler.input()
             if num_tickets_str == "":
                 num_tickets = None
                 break
             is_valid, num_tickets = validate_number_of_tickets(num_tickets_str)
             if not is_valid:
-                self.io_handler.output_handler(msg.MSG_INVALID_NUMBER_OF_TICKETS)
+                self.io_handler.output(msg.MSG_INVALID_NUMBER_OF_TICKETS)
             else:
                 if num_tickets > self.cinema.available_seats:
-                    self.io_handler.output_handler(
+                    self.io_handler.output(
                         msg.MSG_INVALID_EXCEEDING_NUMBER_OF_TICKETS.format(
                             num_seats=self.cinema.available_seats
                         )
@@ -82,20 +76,20 @@ class TicketBookingHandler:
         is_valid_input = False
         seating_position = None
         while not is_valid_input:
-            self.io_handler.output_handler(msg.MSG_INPUT_SEATING_POSITION)
-            seating_position_str = self.io_handler.input_handler()
+            self.io_handler.output(msg.MSG_INPUT_SEATING_POSITION)
+            seating_position_str = self.io_handler.input()
             if seating_position_str == "":
                 seating_position = None
                 break
             is_valid, seating_position = validate_string_input(seating_position_str)
             if not is_valid:
-                self.io_handler.output_handler(msg.MSG_INVALID_SEATING_POSITION)
+                self.io_handler.output(msg.MSG_INVALID_SEATING_POSITION)
             else:
                 is_seating_exist = self.cinema.is_seating_position_exist(
                     seating_position
                 )
                 if not is_seating_exist:
-                    self.io_handler.output_handler(msg.MSG_INVALID_SEATING_POSITION)
+                    self.io_handler.output(msg.MSG_INVALID_SEATING_POSITION)
                 else:
                     is_valid_input = True
         return seating_position
@@ -107,7 +101,5 @@ class TicketBookingHandler:
             if self.cinema.processing_mode == consts.PROCESSING_BOOKING_MODE
             else self.cinema.current_checking.booking_id
         )
-        self.io_handler.output_handler(
-            msg.MSG_OUTPUT_BOOKING_ID.format(booking_id=booking_id)
-        )
-        self.io_handler.output_handler(self.cinema.screen_display())
+        self.io_handler.output(msg.MSG_OUTPUT_BOOKING_ID.format(booking_id=booking_id))
+        self.io_handler.output(self.cinema.screen_display())

@@ -28,7 +28,7 @@ class Cinema:
         ]
         self.index_map = build_index_map(rows, seats_per_row)
         self.last_booking_number = 0
-        self.bookings = []
+        self.bookings = {}
         self.processing_mode = None
         self.current_booking: None | Booking = None
         self.current_checking: None | Booking = None
@@ -103,7 +103,8 @@ class Cinema:
     def confirm_booking(self) -> None:
         """Confirm current booking."""
         self.current_booking.update_status(consts.BOOKING_STATUS_CONFIRMED)
-        self.bookings.append(self.current_booking)
+        booking_id = self.current_booking.booking_id
+        self.bookings[booking_id] = self.current_booking
         self.current_booking = None
         self.last_booking_number += 1
 
@@ -114,9 +115,7 @@ class Cinema:
         Returns:
             a boolean value to indicate the booking id exist or not.
         """
-        return any(
-            [booking for booking in self.bookings if booking.booking_id == booking_id]
-        )
+        return booking_id in self.bookings
 
     def start_checking(self) -> None:
         """Start processing in checking mode."""
@@ -124,11 +123,8 @@ class Cinema:
 
     def check_booking(self, booking_id: str) -> None:
         """Do check the booking with given booking id."""
-        bookings = [
-            booking for booking in self.bookings if booking.booking_id == booking_id
-        ]
-        if any(bookings):
-            self.current_checking = bookings[0]
+        if booking_id in self.bookings:
+            self.current_checking = self.bookings[booking_id]
         else:
             raise ValueError(msg.MSG_NOT_EXIST_BOOKING_ID.format(booking_id=booking_id))
 
@@ -140,12 +136,13 @@ class Cinema:
         top_lines = self._get_top_lines()
         mid_lines = self._get_mid_lines()
         bottom_lines = self._get_bottom_lines()
-        return f"{top_lines}\n{mid_lines}{bottom_lines}"
+        return f"{top_lines}{mid_lines}{bottom_lines}"
 
     def _get_top_lines(self) -> str:
         """Get top lines of the screen."""
         screen_line = " ".join(list(msg.MSG_INFO_SCREEN))
-        return f"{msg.MSG_INFO_SELECTED_SEATS}\n{screen_line}"
+        dash_line = "-" * self.seats_per_row * 2
+        return f"{msg.MSG_INFO_SELECTED_SEATS}\n{screen_line}\n{dash_line}\n"
 
     def _get_mid_lines(self) -> str:
         """Get middle lines of the screen."""
