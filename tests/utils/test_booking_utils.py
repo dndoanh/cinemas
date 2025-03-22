@@ -158,7 +158,7 @@ def test_generate_default_seats(rows, cols, booked_seats, num_tickets, expected_
                 Seat(2, 0, "Reserved"),
                 Seat(2, 1, "Reserved"),
                 Seat(2, 2, "Reserved"),
-                Seat(0, 1, "Reserved"),
+                Seat(1, 0, "Reserved"),
             ],
         ),
         (
@@ -192,8 +192,24 @@ def test_generate_default_seats(rows, cols, booked_seats, num_tickets, expected_
                 Seat(2, 0, "Reserved"),
                 Seat(2, 1, "Reserved"),
                 Seat(2, 2, "Reserved"),
+                Seat(1, 0, "Reserved"),
                 Seat(0, 1, "Reserved"),
-                Seat(0, 2, "Reserved"),
+            ],
+        ),
+        (
+            5,
+            5,
+            [],
+            6,
+            4,
+            4,
+            [
+                Seat(4, 0, "Reserved"),
+                Seat(4, 1, "Reserved"),
+                Seat(4, 2, "Reserved"),
+                Seat(4, 3, "Reserved"),
+                Seat(4, 4, "Reserved"),
+                Seat(3, 2, "Reserved"),
             ],
         ),
     ],
@@ -208,6 +224,5 @@ def test_generate_seats_by_position(
         seat_map, num_tickets, start_row, start_col
     )
     assert len(result_seats) == num_tickets
-    assert all(
-        seat in expected_seats and seat.state == "Reserved" for seat in result_seats
-    )
+    for seat in result_seats:
+        assert seat in expected_seats and seat.state == "Reserved"

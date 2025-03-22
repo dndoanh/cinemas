@@ -38,7 +38,9 @@ def get_furthest_row_idx(seat_map: List[List[Seat]]) -> int:
 
 
 def generate_default_seats(seat_map: List[List[Seat]], num_tickets: int) -> List[Seat]:
-    """Algorithm to generate default seats selection.
+    """Algorithm to generate default seats reservation:
+    1. Begin at the furthest row and reserve all available seats in middle-most manner.
+    2. If there are not enough seats available in the current row, proceed to the next row closer to the screen, reserving seats in a middle-most manner.
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
         num_tickets(int): number of tickets to reserve.
@@ -48,14 +50,14 @@ def generate_default_seats(seat_map: List[List[Seat]], num_tickets: int) -> List
     result_seats = []
     start_row = get_furthest_row_idx(seat_map)
     while len(result_seats) < num_tickets:
-        result_seats = reserve_row_by_mid_most(
+        result_seats = _reserve_row_by_mid_most(
             seat_map, start_row, num_tickets, result_seats
         )
         start_row += 1
     return result_seats
 
 
-def reserve_row_by_mid_most(
+def _reserve_row_by_mid_most(
     seat_map: List[List[Seat]],
     start_row: int,
     num_tickets: int,
@@ -140,7 +142,7 @@ def _reserve_at_left(
     return result_seats
 
 
-def reserve_row_by_right_most(
+def _reserve_row_by_right_most(
     seat_map: List[List[Seat]],
     start_row: int,
     start_col: int,
@@ -168,7 +170,10 @@ def reserve_row_by_right_most(
 def generate_seats_by_position(
     seat_map: List[List[Seat]], num_tickets: int, start_row: int, start_col: int
 ) -> List[Seat]:
-    """Do generate seats at specific position for reservation.
+    """Algorithm to generate seats reservation at specific position:
+        1. Begin at the specified position (`start_row`, `start_col`) and reserve all available seats to the right of the cinema hall.
+        2. If there are not enough seats available in the current row, proceed to the next row closer to the screen, reserving seats in a middle-most manner.
+        3. If there are still not enough seats, return the `start_row` and continue reserving all seats available at the current row and next row further from the screen, again in a middle-most manner.
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
         num_tickets(int): number of tickets to reserve.
@@ -178,7 +183,7 @@ def generate_seats_by_position(
         a list of seats for reservation.
     """
     result_seats = []
-    result_seats = reserve_row_by_right_most(
+    result_seats = _reserve_row_by_right_most(
         seat_map, start_row, start_col, num_tickets, result_seats
     )
     result_seats = _generate_seats_mid_most(
@@ -194,12 +199,15 @@ def _generate_seats_mid_most(
     result_seats: List[Seat],
 ) -> List[Seat]:
     """Generate seats by middle most."""
+    next_row = start_row
+    goto_closer_row = True
     while len(result_seats) < num_tickets:
-        start_row += 1
-        if start_row == len(seat_map):
-            start_row = 0
-        result_seats = reserve_row_by_mid_most(
-            seat_map, start_row, num_tickets, result_seats
+        next_row += 1 if goto_closer_row else -1
+        if next_row == len(seat_map):
+            next_row = start_row
+            goto_closer_row = False
+        result_seats = _reserve_row_by_mid_most(
+            seat_map, next_row, num_tickets, result_seats
         )
     return result_seats
 
