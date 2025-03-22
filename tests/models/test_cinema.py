@@ -61,6 +61,7 @@ def test_exit_processing(movie_title, rows, seats_per_row):
             [
                 "Selected seats:",
                 "S C R E E N",
+                "--------------------",
                 "H . . . . . . . . . .",
                 "G . . . . . . . . . .",
                 "F . . . . . . . . . .",
@@ -79,6 +80,7 @@ def test_exit_processing(movie_title, rows, seats_per_row):
             [
                 "Selected seats:",
                 "S C R E E N",
+                "--------------------",
                 "H o o o o o o o o o o",
                 "G o o o o o o o o o o",
                 "F o o o o o o o o o o",
@@ -131,6 +133,7 @@ def test_create_default_booking_with_exceeding_available_seats(cinema, num_ticke
             [
                 "Selected seats:",
                 "S C R E E N",
+                "--------------------",
                 "H . . . . . . . . . .",
                 "G . . . . . . . . . .",
                 "F . . . . . . . . . .",
@@ -203,6 +206,7 @@ def test_is_seat_position_exist(cinema, seat_position, is_exist):
             [
                 "Selected seats:",
                 "S C R E E N",
+                "--------------------",
                 "H . . . . . . . . . .",
                 "G . . . . . . . . . .",
                 "F . . . . . . . . . .",
@@ -265,6 +269,7 @@ def test_start_checking(movie_title, rows, seats_per_row):
             [
                 "Selected seats:",
                 "S C R E E N",
+                "--------------------",
                 "H . . . . . . . . . .",
                 "G . . . . . . . . . .",
                 "F . . . . . . . . . .",

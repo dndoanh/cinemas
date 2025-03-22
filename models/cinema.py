@@ -142,7 +142,7 @@ class Cinema:
         """Get top lines of the screen."""
         screen_line = " ".join(list(msg.MSG_INFO_SCREEN))
         dash_line = "-" * self.seats_per_row * 2
-        return f"{msg.MSG_INFO_SELECTED_SEATS}\n{screen_line}\n{dash_line}\n"
+        return f"{msg.MSG_INFO_SELECTED_SEATS}{screen_line}\n{dash_line}\n"
 
     def _get_mid_lines(self) -> str:
         """Get middle lines of the screen."""

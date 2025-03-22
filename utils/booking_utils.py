@@ -38,7 +38,7 @@ def get_furthest_row_idx(seat_map: List[List[Seat]]) -> int:
 
 
 def generate_default_seats(seat_map: List[List[Seat]], num_tickets: int) -> List[Seat]:
-    """Do generate default seats reservation
+    """Algorithm to generate default seats selection.
     Args:
         seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
         num_tickets(int): number of tickets to reserve.
