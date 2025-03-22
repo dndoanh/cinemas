@@ -1,6 +1,7 @@
 from typing import List
 
 import utils.constants as consts
+import utils.messages as msg
 from models.seat import Seat
 
 
@@ -33,7 +34,7 @@ def get_furthest_row_idx(seat_map: List[List[Seat]]) -> int:
         ):
             return furthest_row_idx
         furthest_row_idx += 1
-    raise ValueError("There is no row which has at least one Empty seat.")
+    raise ValueError(msg.MSG_INVALID_NO_EMPTY_SEAT)
 
 
 def generate_default_seats(seat_map: List[List[Seat]], num_tickets: int) -> List[Seat]:
@@ -95,7 +96,7 @@ def _reserve_at_mid(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """possible to reserve at mid"""
+    """Possible to reserve at mid"""
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][mid_col].state == consts.SEAT_STATE_EMPTY
@@ -112,7 +113,7 @@ def _reserve_at_right(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """possible to reserve at right"""
+    """Possible to reserve at right"""
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][right_col].state == consts.SEAT_STATE_EMPTY
@@ -129,7 +130,7 @@ def _reserve_at_left(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """possible to reserve at left"""
+    """Possible to reserve at left"""
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][left_col].state == consts.SEAT_STATE_EMPTY

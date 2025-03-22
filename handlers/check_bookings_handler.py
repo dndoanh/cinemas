@@ -47,7 +47,9 @@ class CheckBookingsHandler:
             else:
                 is_booking_id_exist = self.cinema.is_booking_id_exist(booking_id)
                 if not is_booking_id_exist:
-                    self.io_handler.output_handler(msg.MSG_INVALID_BOOKING_ID)
+                    self.io_handler.output_handler(
+                        msg.MSG_NOT_EXIST_BOOKING_ID.format(booking_id=booking_id)
+                    )
                 else:
                     is_valid_input = True
         return booking_id

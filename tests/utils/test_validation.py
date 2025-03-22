@@ -26,6 +26,7 @@ from utils.validation import (
         ("Inception 26 55", (False, None, None, None)),
         ("Inception 8 10", (True, "Inception", 8, 10)),
         ("Blue Sky 8 10", (True, "Blue Sky", 8, 10)),
+        ("Blue Sky 8 10 ", (True, "Blue Sky", 8, 10)),
         ("Rooftop Sky Garden 26 50", (True, "Rooftop Sky Garden", 26, 50)),
     ],
 )

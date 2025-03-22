@@ -22,6 +22,22 @@ MSG_INVALID_MENU_SELECTION = "Invalid menu selection. Please try again."
 MSG_INVALID_NUMBER_OF_TICKETS = "Invalid number of tickets. Please try again."
 MSG_INVALID_SEATING_POSITION = "Invalid seating position. Please try again."
 MSG_INVALID_BOOKING_ID = "Invalid booking id. Please try again."
+MSG_NOT_EXIST_BOOKING_ID = "Booking id [{booking_id}] does not exist. Please try again."
 MSG_INVALID_EXCEEDING_NUMBER_OF_TICKETS = (
     "Sorry, there are only {num_seats} seats available."
 )
+MSG_INVALID_STATE = (
+    "Invalid seat state. The seat state must be one of [Empty, Reserved, Booked]."
+)
+MSG_INVALID_STATUS = (
+    "Invalid booking status. The status must be either Reserved or Confirmed."
+)
+MSG_INVALID_STATUS_RESERVED = (
+    "Invalid booking seats. For Reserved booking, all seat's state must be Reserved."
+)
+MSG_INVALID_STATUS_CONFIRMED = (
+    "Invalid booking seats. For Confirmed booking, all seat's state must be Booked."
+)
+MSG_INVALID_NO_EMPTY_SEAT = "There is no Empty seat."
+MSG_INFO_SELECTED_SEATS = "Selected seats:\n"
+MSG_INFO_SCREEN = "SCREEN"

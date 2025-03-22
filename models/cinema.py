@@ -1,4 +1,5 @@
 import utils.constants as consts
+import utils.messages as msg
 from models.booking import Booking
 from models.seat import Seat
 from utils.booking_utils import (
@@ -65,7 +66,9 @@ class Cinema:
         """
         if num_tickets > self.available_seats:
             raise ValueError(
-                f"Sorry, there are only {self.available_seats} seats available."
+                msg.MSG_INVALID_EXCEEDING_NUMBER_OF_TICKETS.format(
+                    num_seats=self.available_seats
+                )
             )
         booking_id = generate_booking_id(self.last_booking_number)
         seats = generate_default_seats(self.seat_map, num_tickets)
@@ -88,7 +91,7 @@ class Cinema:
             seating_position(str): seating position.
         """
         if seating_position not in self.index_map:
-            raise KeyError("Invalid seat position. Please try again.")
+            raise KeyError(msg.MSG_INVALID_SEATING_POSITION)
         self.current_booking.release_reserved_seats()
         num_seats = len(self.current_booking.seats)
         start_row, start_col = self.index_map[seating_position]
@@ -127,41 +130,45 @@ class Cinema:
         if any(bookings):
             self.current_checking = bookings[0]
         else:
-            raise ValueError("Invalid booking id. Please try again.")
+            raise ValueError(msg.MSG_NOT_EXIST_BOOKING_ID.format(booking_id=booking_id))
 
     def screen_display(self) -> str:
         """Display the current state of the cinema in string format.
         Returns:
              a string to display on the screen.
         """
-        display_str = "Selected seats:\n"
-        display_str += " ".join(list("SCREEN")) + "\n"
+        top_lines = self._get_top_lines()
+        mid_lines = self._get_mid_lines()
+        bottom_lines = self._get_bottom_lines()
+        return f"{top_lines}\n{mid_lines}{bottom_lines}"
+
+    def _get_top_lines(self) -> str:
+        """Get top lines of the screen."""
+        screen_line = " ".join(list(msg.MSG_INFO_SCREEN))
+        return f"{msg.MSG_INFO_SELECTED_SEATS}\n{screen_line}"
+
+    def _get_mid_lines(self) -> str:
+        """Get middle lines of the screen."""
+        mid_lines = ""
         for row in range(self.rows - 1, -1, -1):
-            display_str += self._get_mid_line(row)
-        display_str += self._get_bottom_line()
-        return display_str
+            line_str = consts.ALPHABET_LIST[row]
+            for col in range(self.seats_per_row):
+                if self.processing_mode == consts.PROCESSING_CHECKING_MODE and any(
+                    [
+                        seat
+                        for seat in self.current_checking.seats
+                        if seat.row == row and seat.col == col
+                    ]
+                ):
+                    line_str += consts.DISPLAY_RESERVED
+                else:
+                    line_str += str(self.seat_map[row][col])
+            mid_lines += " ".join(list(line_str)) + "\n"
+        return mid_lines
 
-    def _get_mid_line(self, row) -> str:
-        """Get middle line of the screen."""
-        line_str = consts.ALPHABET_LIST[row]
-        for col in range(self.seats_per_row):
-            if self.processing_mode == consts.PROCESSING_CHECKING_MODE and any(
-                [
-                    seat
-                    for seat in self.current_checking.seats
-                    if seat.row == row and seat.col == col
-                ]
-            ):
-                line_str += consts.DISPLAY_RESERVED
-            else:
-                line_str += str(self.seat_map[row][col])
-        line_str += " ".join(list(line_str)) + "\n"
-        return line_str
-
-    def _get_bottom_line(self) -> str:
-        """Get bottom line of the screen."""
-        bottom_line_str = " "
+    def _get_bottom_lines(self) -> str:
+        """Get bottom lines of the screen."""
+        bottom_line = " "
         for col in range(1, self.seats_per_row + 1):
-            bottom_line_str += " " + str(col)
-        bottom_line_str += "\n"
-        return bottom_line_str
+            bottom_line += " " + str(col)
+        return bottom_line

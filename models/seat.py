@@ -1,4 +1,5 @@
 import utils.constants as consts
+import utils.messages as msg
 
 
 class Seat:
@@ -17,9 +18,7 @@ class Seat:
             consts.SEAT_STATE_RESERVED,
             consts.SEAT_STATE_BOOKED,
         ]:
-            raise ValueError(
-                "Invalid seat state. The seat state must be one of [Empty, Reserved, Booked]."
-            )
+            raise ValueError(msg.MSG_INVALID_STATE)
         self.state = state
 
     def __eq__(self, other) -> bool:
@@ -57,7 +56,5 @@ class Seat:
             consts.SEAT_STATE_RESERVED,
             consts.SEAT_STATE_BOOKED,
         ]:
-            raise ValueError(
-                "Invalid seat state. The seat state must be one of [Empty, Reserved, Booked]."
-            )
+            raise ValueError(msg.MSG_INVALID_STATE)
         self.state = new_state

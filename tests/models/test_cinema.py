@@ -71,7 +71,25 @@ def test_exit_processing(movie_title, rows, seats_per_row):
                 "A . . . o o o o . . .",
                 "  1 2 3 4 5 6 7 8 9 10",
             ],
-        )
+        ),
+        (
+            Cinema("Inception", 8, 10),
+            80,
+            "GIC0001",
+            [
+                "Selected seats:",
+                "S C R E E N",
+                "H o o o o o o o o o o",
+                "G o o o o o o o o o o",
+                "F o o o o o o o o o o",
+                "E o o o o o o o o o o",
+                "D o o o o o o o o o o",
+                "C o o o o o o o o o o",
+                "B o o o o o o o o o o",
+                "A o o o o o o o o o o",
+                "  1 2 3 4 5 6 7 8 9 10",
+            ],
+        ),
     ],
 )
 def test_create_default_booking(cinema, num_tickets, booking_id, screen_display):
@@ -83,7 +101,7 @@ def test_create_default_booking(cinema, num_tickets, booking_id, screen_display)
         seat.state == consts.SEAT_STATE_RESERVED
         for seat in cinema.current_booking.seats
     )
-    display_str = cinema.screen_display()
+    display_str = cinema.screen_display().split("\n")
     for line in screen_display:
         assert line in display_str
 
