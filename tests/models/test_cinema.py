@@ -144,7 +144,27 @@ def test_create_default_booking_with_exceeding_available_seats(cinema, num_ticke
                 "A . . . . . . . . . .",
                 "  1 2 3 4 5 6 7 8 9 10",
             ],
-        )
+        ),
+        (
+            Cinema("Inception", 8, 10),
+            4,
+            "c05",
+            "GIC0001",
+            [
+                "Selected seats:",
+                "S C R E E N",
+                "--------------------",
+                "H . . . . . . . . . .",
+                "G . . . . . . . . . .",
+                "F . . . . . . . . . .",
+                "E . . . . . . . . . .",
+                "D . . . . . . . . . .",
+                "C . . . . o o o o . .",
+                "B . . . . . . . . . .",
+                "A . . . . . . . . . .",
+                "  1 2 3 4 5 6 7 8 9 10",
+            ],
+        ),
     ],
 )
 def test_change_seat_position(
@@ -183,16 +203,17 @@ def test_change_seat_position_with_invalid_position(
 
 
 @pytest.mark.parametrize(
-    "cinema, seat_position, is_exist",
+    "cinema, seating_position, is_exist",
     [
         (Cinema("Inception", 8, 10), "A500", False),
         (Cinema("Inception", 8, 10), "Z03", False),
         (Cinema("Inception", 8, 10), "A10", True),
         (Cinema("Inception", 8, 10), "B03", True),
+        (Cinema("Inception", 8, 10), "b03", True),
     ],
 )
-def test_is_seat_position_exist(cinema, seat_position, is_exist):
-    result = cinema.is_seating_position_exist(seat_position)
+def test_is_seat_position_exist(cinema, seating_position, is_exist):
+    result = cinema.is_seating_position_exist(seating_position)
     assert result == is_exist
 
 
@@ -243,6 +264,7 @@ def test_confirm_booking(cinema, num_tickets, booking_id, screen_display):
         (Cinema("Inception", 8, 10), 4, "ABC0001", False),
         (Cinema("Inception", 8, 10), 4, "GIC0002", False),
         (Cinema("Inception", 8, 10), 4, "GIC0001", True),
+        (Cinema("Inception", 8, 10), 4, "gic0001", True),
     ],
 )
 def test_is_booking_id_exist(cinema, num_tickets, booking_id, is_exist):
@@ -280,7 +302,26 @@ def test_start_checking(movie_title, rows, seats_per_row):
                 "A . . . o o o o . . .",
                 "  1 2 3 4 5 6 7 8 9 10",
             ],
-        )
+        ),
+        (
+            Cinema("Inception", 8, 10),
+            4,
+            "gic0001",
+            [
+                "Selected seats:",
+                "S C R E E N",
+                "--------------------",
+                "H . . . . . . . . . .",
+                "G . . . . . . . . . .",
+                "F . . . . . . . . . .",
+                "E . . . . . . . . . .",
+                "D . . . . . . . . . .",
+                "C . . . . . . . . . .",
+                "B . . . . . . . . . .",
+                "A . . . o o o o . . .",
+                "  1 2 3 4 5 6 7 8 9 10",
+            ],
+        ),
     ],
 )
 def test_check_booking(cinema, num_tickets, booking_id, screen_display):
@@ -288,7 +329,7 @@ def test_check_booking(cinema, num_tickets, booking_id, screen_display):
     cinema.confirm_booking()
     cinema.start_checking()
     cinema.check_booking(booking_id)
-    assert cinema.current_checking.booking_id == booking_id
+    assert cinema.current_checking.booking_id.upper() == booking_id.upper()
     assert cinema.current_checking.status == consts.BOOKING_STATUS_CONFIRMED
     assert len(cinema.current_checking.seats) == num_tickets
     assert all(

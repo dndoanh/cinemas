@@ -76,21 +76,23 @@ class Cinema:
             booking_id, consts.BOOKING_STATUS_RESERVED, seats
         )
 
-    def is_seating_position_exist(self, seat_position: str) -> bool:
+    def is_seating_position_exist(self, seating_position: str) -> bool:
         """Check whether given seat position exist in seat map or not.
         Args:
-            seat_position(str): the seat position in row and column format. E.g. A08
+            seating_position(str): the seat position in row and column format. E.g. A08
         Returns:
             a boolean value to indicate the seat position exist or not.
         """
-        return seat_position in self.index_map
+        seating_position = seating_position.upper()
+        return seating_position in self.index_map
 
     def change_seating_position(self, seating_position: str) -> None:
         """Re-generate booking seats with the specific starting position.
         Args:
             seating_position(str): seating position.
         """
-        if seating_position not in self.index_map:
+        seating_position = seating_position.upper()
+        if not self.is_seating_position_exist(seating_position):
             raise KeyError(msg.MSG_INVALID_SEATING_POSITION)
         self.current_booking.release_reserved_seats()
         num_seats = len(self.current_booking.seats)
@@ -115,6 +117,7 @@ class Cinema:
         Returns:
             a boolean value to indicate the booking id exist or not.
         """
+        booking_id = booking_id.upper()
         return booking_id in self.bookings
 
     def start_checking(self) -> None:
@@ -123,7 +126,8 @@ class Cinema:
 
     def check_booking(self, booking_id: str) -> None:
         """Do check the booking with given booking id."""
-        if booking_id in self.bookings:
+        booking_id = booking_id.upper()
+        if self.is_booking_id_exist(booking_id):
             self.current_checking = self.bookings[booking_id]
         else:
             raise ValueError(msg.MSG_NOT_EXIST_BOOKING_ID.format(booking_id=booking_id))

@@ -13,7 +13,7 @@ python -m venv venv
 
 source venv/bin/activate
 ```
-To install the necessary Python packages (include `--trusted-host` if required), run:
+To install the necessary Python packages (include `--trusted-host pypi.org --trusted-host files.pythonhosted.org` if required), run following command:
 ```commandline
 pip install -r requirements.txt
 ```
@@ -33,7 +33,8 @@ pytest --cov .
 ```
 ## Assumptions
 1. Upon invalid input (e.g. invalid movie title rows, seats per row; invalid number of tickets, invalid of seating position, invalid booking id), the program will prompt an error message for input again.
-2. Algorithm to generate seats reservation at specific position:
+2. The seating position and booking id are case-insensitive. 
+3. Algorithm to generate seats reservation at specific position:
 - Begin at the specified position (`start_row`, `start_col`) and reserve all available seats to the right of the cinema hall.
 - If there are not enough seats available in the current row, proceed to the next row closer to the screen, reserving seats in a middle-most manner.
 - If there are still not enough seats, return the `start_row` and continue reserving all seats available at the current row and next row further from the screen, again in a middle-most manner.
