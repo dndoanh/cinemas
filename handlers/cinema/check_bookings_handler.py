@@ -1,4 +1,3 @@
-import utils.constants as consts
 import utils.messages as msg
 from handlers.cinema.cinema_handler import CinemaHandler
 from handlers.io.io_handler import IOHandler
@@ -13,7 +12,10 @@ class CheckBookingsHandler(CinemaHandler):
         self.cinema = None
 
     def run(self, cinema: Cinema) -> None:
-        """Start check bookings process."""
+        """Start check bookings process.
+        Args:
+            cinema(Cinema): a given cinema to process check bookings.
+        """
         self.cinema = cinema
         self.cinema.start_checking()
         while True:
@@ -22,11 +24,14 @@ class CheckBookingsHandler(CinemaHandler):
                 break
             else:
                 self.cinema.check_booking(booking_id)
-                self._screen_display_output()
+                self._display_current_checking()
         self.cinema.exit_processing()
 
     def _input_booking_id(self) -> str:
-        """Input booking to check."""
+        """Input booking to check.
+        Returns:
+            a booking id
+        """
         is_valid_input = False
         booking_id = None
         while not is_valid_input:
@@ -48,12 +53,8 @@ class CheckBookingsHandler(CinemaHandler):
                     is_valid_input = True
         return booking_id
 
-    def _screen_display_output(self) -> None:
-        """Display the current booking id and seat map to output."""
-        booking_id = (
-            self.cinema.current_booking.booking_id
-            if self.cinema.processing_mode == consts.PROCESSING_BOOKING_MODE
-            else self.cinema.current_checking.booking_id
-        )
+    def _display_current_checking(self) -> None:
+        """Display the current checking and seat map to output."""
+        booking_id = self.cinema.current_checking.booking_id
         self.io_handler.output(msg.MSG_OUTPUT_BOOKING_ID.format(booking_id=booking_id))
         self.io_handler.output(self.cinema.screen_display())

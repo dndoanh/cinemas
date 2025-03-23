@@ -32,13 +32,19 @@ class BookingHandler:
         self._get_handler(option)
 
     def _get_handler(self, option: str) -> None:
-        """Process ticket booking."""
+        """Process ticket booking.
+        Args:
+            option(str): a menu selection.
+        """
         cinema_handler = CinemaHandlerFactory.get_handler(option)
         cinema_handler.run(self.cinema)
         self._main_menu()
 
     def _input_menu_selection(self) -> str:
-        """Select an option from the menu."""
+        """Select an option from the menu.
+        Returns:
+            a menu selection.
+        """
         is_valid_selection = False
         selection = None
         menu_str = msg.MSG_WELCOME.format(

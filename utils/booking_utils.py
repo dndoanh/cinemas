@@ -98,7 +98,16 @@ def _reserve_at_mid(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """Possible to reserve at mid"""
+    """Possible to reserve at mid
+    Args:
+        seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
+        start_row(int): the row index of the seat to reserve.
+        mid_col(int): the column index of the seat to reserve.
+        num_tickets(int): number of tickets to reserve.
+        result_seats(List[Seat]): a list of seats which are reserved.
+    Returns:
+        a list of seats for reservation.
+    """
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][mid_col].state == consts.SEAT_STATE_EMPTY
@@ -115,7 +124,16 @@ def _reserve_at_right(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """Possible to reserve at right"""
+    """Possible to reserve at right
+    Args:
+        seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
+        start_row(int): the row index of the seat to reserve.
+        right_col(int): the column index of the seat to reserve.
+        num_tickets(int): number of tickets to reserve.
+        result_seats(List[Seat]): a list of seats which are reserved.
+    Returns:
+        a list of seats for reservation.
+    """
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][right_col].state == consts.SEAT_STATE_EMPTY
@@ -132,7 +150,16 @@ def _reserve_at_left(
     num_tickets: int,
     result_seats,
 ) -> List[Seat]:
-    """Possible to reserve at left"""
+    """Possible to reserve at left
+    Args:
+        seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
+        start_row(int): the row index of the seat to reserve.
+        left_col(int): the column index of the seat to reserve.
+        num_tickets(int): number of tickets to reserve.
+        result_seats(List[Seat]): a list of seats which are reserved.
+    Returns:
+        a list of seats for reservation.
+    """
     if (
         len(result_seats) < num_tickets
         and seat_map[start_row][left_col].state == consts.SEAT_STATE_EMPTY
@@ -186,19 +213,27 @@ def generate_seats_by_position(
     result_seats = _reserve_row_by_right_most(
         seat_map, start_row, start_col, num_tickets, result_seats
     )
-    result_seats = _generate_seats_mid_most(
+    result_seats = _select_overflow_seats_by_mid_most(
         seat_map, num_tickets, start_row, result_seats
     )
     return result_seats
 
 
-def _generate_seats_mid_most(
+def _select_overflow_seats_by_mid_most(
     seat_map: List[List[Seat]],
     num_tickets: int,
     start_row: int,
     result_seats: List[Seat],
 ) -> List[Seat]:
-    """Generate seats by middle most."""
+    """Select overflow seats by middle most.
+    Args:
+        seat_map(List[List[Seat]]): the seat map which contains two-dimensional array of Seat.
+        num_tickets(int): number of tickets to reserve.
+        start_row(int): the row index to start looking up.
+        result_seats(List[Seat]): a list of seats which are reserved.
+    Returns:
+        a list of seats for reservation.
+    """
     next_row = start_row
     goto_closer_row = True
     while len(result_seats) < num_tickets:

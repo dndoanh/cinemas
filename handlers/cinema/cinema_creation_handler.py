@@ -27,7 +27,10 @@ class CinemaCreationHandler:
         return cinema
 
     def _input_title_rows_seats_per_row(self) -> tuple:
-        """Input movie title, rows, seats per row."""
+        """Input movie title, rows and seats per row.
+        Returns:
+            a tuple of movie title, rows and seats per row.
+        """
         is_valid_input = False
         movie_title, rows, seats_per_row = None, None, None
         while not is_valid_input:

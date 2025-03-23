@@ -18,5 +18,5 @@ class CinemaHandler(ABC):
 
     @abstractmethod
     def run(self, cinema: Cinema) -> None:
-        """Handle output."""
-        raise NotImplementedError("run should be implemented in subclasses.")
+        """Start run the handler."""
+        raise NotImplementedError("run() should be implemented in subclasses.")

@@ -6,7 +6,7 @@ def validate_title_rows_seats_per_row(title_rows_seats_per_row_str: str) -> tupl
     Args:
         title_rows_seats_per_row_str(str): input string of movie title, rows, seats per row.
     Return:
-        a boolean value to indicate whether movie title, rows, seats per row are valid or not.
+        a tuple values to indicate whether movie title, rows, seats per row are valid or not.
     """
     if not title_rows_seats_per_row_str:
         return False, None, None, None
@@ -36,7 +36,7 @@ def validate_menu_selection(selection_str: str) -> tuple:
     Args:
         selection_str (str): given input string
     Returns:
-        (tuple) the value to indicate the selection of the menu is valid or not.
+        a tuple values to indicate the selection of the menu is valid or not.
     """
     if selection_str is None or selection_str == "":
         return False, None
@@ -48,7 +48,7 @@ def validate_number_of_tickets(number_of_tickets_str: str) -> tuple:
     Args:
         number_of_tickets_str (str): given input string
     Returns:
-        (tuple) the value to indicate the number of tickets is valid or not.
+        a tuple values to indicate the number of tickets is valid or not.
     """
     if number_of_tickets_str is None or number_of_tickets_str == "":
         return False, None
@@ -66,7 +66,7 @@ def validate_string_input(input_str: str) -> tuple:
     Args:
         input_str (str): given string input
     Returns:
-        (tuple) the value to indicate the string input is valid or not.
+        a tuple values to indicate the string input is valid or not.
     """
     if input_str is None or input_str.strip() == "":
         return False, None
